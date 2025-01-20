@@ -1,50 +1,57 @@
-# HTMLTag
+# Biblioteca HTMLTag
 
 ## Descripción
 
-Esta es una biblioteca PHP que maneja la generación de etiquetas HTML, sus atributos y contenido.
+Esta es una biblioteca PHP para la generación de etiquetas HTML, sus atributos y contenido de forma segura y eficiente.
 
-El enfoque está en la seguridad, velocidad y facilidad de uso.
+Características principales:
+- Seguridad: Escape automático de contenido
+- Velocidad: Optimizada para rendimiento
+- Usabilidad: API intuitiva y fluida
+- Flexibilidad: Altamente extensible
 
 ## Requisitos
 
-* PHP 5.6 para uso regular.
-* PHP 7 para desarrollo y ejecución de pruebas.
+* PHP 5.6 o superior para uso en producción
+* PHP 7.0 o superior para desarrollo y pruebas
 
 ## Instalación
 
-```composer require jalexiscv/Html```
+```bash
+composer require jalexiscv/Html
+```
 
-## Uso
+## Uso Básico
 
 ```php
 <?php
 
 include 'vendor/autoload.php';
 
-// Objeto Meta.
+// Crear un meta tag
 $meta = \App\Libraries\Html\HtmlTag::tag('meta', ['name' => 'author']);
 $meta->attr('content', 'pol dellaiera');
 
-// Objeto Título.
+// Crear un título
 $title = \App\Libraries\Html\HtmlTag::tag('h1', ['class' => 'title'], 'Bienvenido a HTMLTag');
 
-// Objeto Párrafo.
+// Crear un párrafo
 $paragraph = \App\Libraries\Html\HtmlTag::tag('p', ['class' => 'section']);
 $paragraph->attr('class')->append('paragraph');
-$paragraph->content('Esta biblioteca te ayuda a crear HTML.');
+$paragraph->content('Esta biblioteca te ayuda a crear HTML de forma segura y eficiente.');
 
-// Pie de página simple
-$footer = \App\Libraries\Html\HtmlTag::tag('footer', [], '¡Gracias por usarla!');
+// Crear un pie de página
+$footer = \App\Libraries\Html\HtmlTag::tag('footer', [], '¡Gracias por usar HTMLTag!');
 
-// Etiqueta body.
-// Agregar contenido que puede ser transformado en cadenas.
+// Crear el cuerpo del documento
 $body = \App\Libraries\Html\HtmlTag::tag('body', [], [$title, $paragraph, $footer]);
 
-// Corregir algo que ya fue agregado.
-$paragraph->attr('class')->remove('section')->replace('paragraph', 'description');
+// Modificar clases existentes
+$paragraph->attr('class')
+    ->remove('section')
+    ->replace('paragraph', 'description');
 
-// Alterar los valores de atributos específicos.
+// Transformar valores de atributos
 $meta->attr('content')->alter(
     function ($values) {
         return array_map('strtoupper', $values);
@@ -54,20 +61,20 @@ $meta->attr('content')->alter(
 echo $meta . $body;
 ```
 
-Imprimirá:
+Resultado:
 
 ```html
 <meta content="POL DELLAIERA" name="author"/>
 <body>
   <h1 class="title">Bienvenido a HTMLTag</h1>
-  <p class="description">Esta biblioteca te ayuda a crear HTML.</p>
-  <footer>¡Gracias por usarla!</footer>
+  <p class="description">Esta biblioteca te ayuda a crear HTML de forma segura y eficiente.</p>
+  <footer>¡Gracias por usar HTMLTag!</footer>
 </body>
 ```
 
-# Constructor HTML
+# Constructor HTML (HtmlBuilder)
 
-La biblioteca viene con una clase Constructor HTML que te permite crear contenido HTML rápidamente.
+La biblioteca incluye una clase `HtmlBuilder` que proporciona una interfaz fluida para crear HTML rápidamente:
 
 ```php
 <?php 
@@ -77,221 +84,188 @@ include 'vendor/autoload.php';
 $builder = new \App\Libraries\Html\HtmlBuilder();
 
 $html = $builder
-    ->c(' Comentario 1 ') // Agregar un comentario
-    ->p(['class' => ['paragraph']], 'algún contenido')
-    ->div(['class' => 'container'], 'esto es un div simple')
-    ->_() // Finalizar etiqueta <div>
-    ->c(' Comentario 2 ')
-    ->region([], 'región con etiquetas <inseguras>')
+    ->c('<!-- Inicio de contenido -->') // Agregar comentario
+    ->p(['class' => ['paragraph']], 'Este es un párrafo')
+    ->div(['class' => 'container'], 'Este es un div')
+    ->_() // Cerrar div
+    ->c('<!-- Sección de navegación -->')
+    ->region([], 'Contenido con <etiquetas> especiales')
     ->_()
-    ->c(' Comentario 3 ')
+    ->c('<!-- Enlaces -->')
     ->a()
-    ->c(' Comentario 4 ')
-    ->span(['class' => 'link'], 'Contenido del enlace')
+    ->c('<!-- Contenido del enlace -->')
+    ->span(['class' => 'link'], 'Texto del enlace')
     ->_()
-    ->div(['class' => 'Clases "inseguras"'], 'Contenido <a href="#">inseguro</a>')
+    ->div(['class' => 'contenido-especial'], 'Contenido con <marcado> HTML')
     ->_()
-    ->c(' Comentario 5 ');
+    ->c('<!-- Fin de contenido -->');
 
 echo $html;
 ```
 
-Esto producirá:
+Resultado:
 
 ```html
-<!-- Comentario 1 -->
+<!-- Inicio de contenido -->
 <p class="paragraph">
-  algún contenido
+  Este es un párrafo
   <div class="container">
-    esto es un div simple
+    Este es un div
   </div>
 </p>
-<!-- Comentario 2 -->
+<!-- Sección de navegación -->
 <region>
-  región con etiquetas &lt;inseguras&gt;
+  Contenido con &lt;etiquetas&gt; especiales
 </region>
-<!-- Comentario 3 -->
+<!-- Enlaces -->
 <a>
-  <!-- Comentario 4 -->
+  <!-- Contenido del enlace -->
   <span class="link">
-    Contenido del enlace
+    Texto del enlace
   </span>
 </a>
-<div class="Clases &quot;inseguras&quot;">
-  Contenido &lt;a href=&quot;#&quot;&gt;inseguro&lt;/a&gt;
+<div class="contenido-especial">
+  Contenido con &lt;marcado&gt; HTML
 </div>
-<!-- Comentario 5 -->
+<!-- Fin de contenido -->
 ```
 
-## Notas Técnicas
+## Arquitectura
 
-### Análisis de Etiquetas
+### Estructura de Componentes
 
 ```
- El nombre de la etiqueta    Un atributo                El contenido
-  |                              |                           |
- ++-+                      +-----+-----+                +----+-----+
- |  |                      |           |                |          |
+ Nombre de etiqueta         Atributo                   Contenido
+  |                            |                           |
+ ++-+                    +-----+-----+              +------+-----+
+ |  |                    |           |              |            |
  
-<body class="content node" id="node-123" data-clickable>¡Hola mundo!</body>
+<div class="contenedor" id="main" data-tipo>Contenido HTML</div>
 
-      |                                               |
-      +-----------------------+-----------------------+
-                              |
-                        Los atributos
+     |                                              |
+     +----------------------+----------------------+
+                           |
+                      Atributos
 ```
    
-La biblioteca está construida alrededor de 3 objetos:
+La biblioteca está construida sobre tres componentes principales:
 
-* El objeto Tag que maneja los atributos, el nombre de la etiqueta y el contenido,
-* El objeto Attributes que maneja los atributos,
-* El objeto Attribute que maneja un atributo que está compuesto por nombre y su(s) valor(es).
+1. **Tag**: Gestiona la etiqueta HTML completa
+   - Nombre de la etiqueta
+   - Atributos
+   - Contenido
 
-El objeto Tag utiliza el objeto Attributes que es, básicamente, el almacenamiento de objetos Attribute.
-Puedes usar cada uno de estos objetos individualmente.
+2. **Attributes**: Colección de atributos
+   - Almacena múltiples objetos Attribute
+   - Gestiona la serialización
 
-Todos los métodos están documentados a través de interfaces y tu IDE debería poder autocompletar cuando sea necesario.
+3. **Attribute**: Gestiona un atributo individual
+   - Nombre del atributo
+   - Valor o valores
+   - Reglas de procesamiento
 
-La mayoría de los parámetros de los métodos son [variadics](http://php.net/manual/en/functions.arguments.php#functions.variable-arg-list) y
-aceptan valores anidados ilimitados o arrays de valores.
-También puedes encadenar la mayoría de los métodos.
+### Características Clave
 
-El tipo de valores permitidos puede ser casi cualquier cosa. Si es un objeto, debe implementar el método `__toString()`.
+- Interfaces bien documentadas con soporte para autocompletado en IDEs
+- Métodos con parámetros variables ([variadics](http://php.net/manual/es/functions.arguments.php#functions.variable-arg-list))
+- Soporte para valores anidados y arrays
+- Encadenamiento de métodos para una API fluida
+- Soporte para cualquier valor que implemente `__toString()`
 
-#### Ejemplos
+### Ejemplos de Uso
 
-Encadenamiento de métodos:
+#### Encadenamiento de Métodos
 
 ```php
 <?php 
 
 include 'vendor/autoload.php';
 
-$tag = \App\Libraries\Html\HtmlTag::tag('body');
+$tag = \App\Libraries\Html\HtmlTag::tag('div');
 $tag
-    ->attr('class', ['FRONT', ['NODE', ['sidebra']], 'node', '  a', '  b  ', [' c']])
-    ->replace('sidebra', 'sidebar')
+    ->attr('class', ['HEADER', ['NAV', ['menu']], 'nav', '  a', '  b  ', [' c']])
+    ->replace('menu', 'main-menu')
     ->alter(
         function ($values) {
             $values = array_map('strtolower', $values);
             $values = array_unique($values);
             $values = array_map('trim', $values);
             natcasesort($values);
-
             return $values;
         }
     );
-$tag->content('¡Hola mundo!');
+$tag->content('Menú Principal');
 
-echo $tag; // <body class="a b c front node sidebar">¡Hola mundo!</body>
+echo $tag; // <div class="a b c header nav main-menu">Menú Principal</div>
 ```
 
-Los siguientes ejemplos producirán el mismo HTML:
+### Sistema de Atributos
 
-```php
-<?php 
+Los atributos se manejan a través de clases especializadas que implementan `AttributeInterface`. La biblioteca incluye tres tipos predefinidos:
 
-include 'vendor/autoload.php';
+1. `Generic`: Atributo por defecto
+2. `DOMAttribute`: Utiliza la extensión DOM de PHP
+3. `Class_`: Especializado para clases CSS
 
-$tag = \App\Libraries\Html\HtmlTag::tag('body');
-$tag->attr('class', ['front', ['node', ['sidebar']]]);
-$tag->content('¡Hola mundo!');
+#### Atributos Personalizados
 
-echo $tag; // <body class="front node sidebar">¡Hola mundo!</body>
-```
-
-### Atributos
-
-Los atributos se manejan a través de objetos dedicados.
-Cada atributo es un objeto que implementa `AttributeInterface`.
-
-La biblioteca viene con algunos atributos predefinidos:
-
-* `Generic`: el atributo predeterminado que se usa cuando no se encuentra ningún otro,
-* `DOMAttribute`: un atributo que usa la extensión DOM de PHP para procesar valores,
-* `Class_`: un atributo específico para manejar clases CSS.
-
-Puedes crear tus propios atributos implementando `AttributeInterface` o extendiendo uno existente.
-
-Para registrar un atributo personalizado:
+Puedes crear tus propios manejadores de atributos:
 
 ```php
 <?php
 
-\App\Libraries\Html\Attribute\AttributeFactory::$registry['class'] = MyCustomAttributeClass::class;
+\App\Libraries\Html\Attribute\AttributeFactory::$registry['class'] = MiClaseAtributo::class;
 
 $tag = \App\Libraries\Html\HtmlTag::tag('p');
+$tag->attr('class', 'primario', 'secundario', ['destacado', 'grande'], 'oculto');
 
-// Agregar un atributo de clase y algunos valores.
-$tag->attr('class', 'E', 'C', ['A', 'B'], 'D', 'A', ' F ');
-
-echo $tag; // <p class="A B C D E F"></p>
+echo $tag; // <p class="destacado grande oculto primario secundario"></p>
 ```
-
-## Inyección de dependencias y extensiones
-
-Gracias a las fábricas proporcionadas en la biblioteca, es posible utilizar clases diferentes en lugar de las predeterminadas.
-
-Ej: Quieres tener un manejo especial para el atributo "class".
-
-```php
-<?php 
-
-include 'vendor/autoload.php';
-
-class MyCustomAttributeClass extends \App\Libraries\Html\Attribute\Attribute {
-    /**
-     * {@inheritdoc}
-     */
-    protected function preprocess(array $values, array $context = []) {
-        // Eliminar valores duplicados.
-        $values = array_unique($values);
-
-        // Recortar valores.
-        $values = array_map('trim', $values);
-
-        // Convertir a minúsculas
-        $values = array_map('strtolower', $values);
-
-        // Ordenar valores.
-        natcasesort($values);
-
-        return $values;
-    }
-}
-
-\App\Libraries\Html\Attribute\AttributeFactory::$registry['class'] = MyCustomAttributeClass::class;
-
-$tag = HtmlTag::tag('p'); 
-
-// Agregar un atributo de clase y algunos valores.
-$tag->attr('class', 'E', 'C', ['A', 'B'], 'D', 'A', ' F ');
-// Agregar un atributo aleatorio y los mismos valores.
-$tag->attr('data-original', 'e', 'c', ['a', 'b'], 'd', 'a', ' f ');
-
-echo $tag; // <p class="a b c d e f" data-original="e c a b d a  f "/>
-```
-
-El mismo mecanismo se aplica para la clase `Tag`.
 
 ## Seguridad
 
-Para evitar problemas de seguridad, todos los objetos impresos están escapados.
+La biblioteca implementa automáticamente:
 
-Si los objetos se utilizan como entrada y si implementan el método `__toString()`, se convertirán en cadenas.
-Es responsabilidad del usuario asegurarse de que impriman salida **insegura** para que no se escapen dos veces.
+- Escape de contenido HTML
+- Sanitización de atributos
+- Protección contra XSS
+- Validación de valores
 
-## Calidad del código, pruebas y benchmarks
+## Pruebas y Calidad
 
-Cada vez que se introducen cambios en la biblioteca, [Travis CI](https://travis-ci.org/drupol/htmltag/builds) ejecuta las pruebas y los benchmarks.
+### Herramientas de Calidad
 
-La biblioteca tiene pruebas escritas con [PHPSpec](http://www.phpspec.net/).
-No dudes en revisarlas en el directorio `spec`. Ejecuta `composer phpspec` para ejecutar las pruebas.
+- **PHPSpec**: Pruebas de comportamiento
+  ```bash
+  composer phpspec
+  ```
 
-[PHPBench](https://github.com/phpbench/phpbench) se utiliza para benchmark la biblioteca, para ejecutar los benchmarks: `composer bench`
+- **PHPBench**: Pruebas de rendimiento
+  ```bash
+  composer bench
+  ```
 
-[PHPInfection](https://github.com/infection/infection) se utiliza para asegurarse de que tu código esté correctamente probado, ejecuta `composer infection` para probar tu código.
+- **PHPInfection**: Pruebas de mutación
+  ```bash
+  composer infection
+  ```
 
-## Contribuir
+### Integración Continua
 
-No dudes en contribuir a esta biblioteca enviando solicitudes de extracción en Github. Estoy bastante reactivo :-)
+La biblioteca utiliza [Travis CI](https://travis-ci.org/drupol/htmltag/builds) para:
+- Ejecución automática de pruebas
+- Verificación de estándares de código
+- Medición de rendimiento
+
+## Contribuciones
+
+¡Las contribuciones son bienvenidas! Puedes:
+
+1. Reportar problemas
+2. Sugerir mejoras
+3. Enviar pull requests
+4. Mejorar la documentación
+
+## Licencia
+
+Esta biblioteca está disponible bajo la licencia MIT. Ver el archivo LICENSE para más detalles.
