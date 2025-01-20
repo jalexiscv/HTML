@@ -21,7 +21,7 @@ class Cards
     private $subtitle;
     private $text;
     private $buttons;
-    private $headerButtons;
+    private $headerButtons; 
     private $horizontal;
     private $attributes;
 
