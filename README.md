@@ -2,7 +2,51 @@
 
 ## Descripción
 
-Esta es una biblioteca PHP para la generación de etiquetas HTML, sus atributos y contenido de forma segura y eficiente.
+Esta es una biblioteca PHP diseñada para la generación segura y eficiente de HTML estructurado. Proporciona una API fluida y orientada a objetos que facilita la creación, manipulación y renderizado de elementos HTML, manteniendo un alto nivel de seguridad y rendimiento.
+
+La biblioteca está construida sobre un sistema modular que separa las responsabilidades entre etiquetas, atributos y contenido, permitiendo una manipulación precisa y segura de cada componente HTML. Esta arquitectura facilita la extensibilidad y el mantenimiento del código.
+
+### ¿Por qué usar HTMLTag? 
+
+1. **Seguridad Integrada**:
+   - Escape automático de contenido HTML para prevenir XSS
+   - Validación y sanitización de atributos
+   - Manejo seguro de caracteres especiales 
+   - Protección contra inyección de código malicioso
+
+2. **Rendimiento Optimizado**:
+   - Generación eficiente de HTML
+   - Mínimo overhead en memoria
+   - Carga perezosa de componentes
+   - Optimización de strings y concatenaciones
+
+3. **API Intuitiva**:
+   - Interfaz fluida para encadenamiento de métodos
+   - Sintaxis clara y consistente
+   - Autocompletado en IDEs modernos
+   - Documentación completa y ejemplos prácticos
+
+4. **Flexibilidad y Extensibilidad**:
+   - Sistema modular de componentes
+   - Fácil creación de elementos personalizados
+   - Soporte para atributos personalizados
+   - Integración con frameworks existentes
+
+5. **Herramientas Especializadas**:
+   - Constructor HTML para creación rápida
+   - Gestión avanzada de clases CSS
+   - Soporte para data-attributes
+   - Componentes Bootstrap 5 integrados
+
+### Componentes Principales
+
+La biblioteca incluye varios componentes especializados:
+
+- **HtmlTag**: Núcleo de la biblioteca para crear y manipular etiquetas HTML
+- **HtmlBuilder**: Constructor fluido para generación rápida de HTML
+- **Modals**: Sistema completo para ventanas modales de Bootstrap 5
+- **Grid**: Componente para crear tablas y grids dinámicos
+- **Attributes**: Sistema avanzado de gestión de atributos HTML
 
 Características principales:
 - Seguridad: Escape automático de contenido
