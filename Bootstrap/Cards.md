@@ -84,6 +84,11 @@ $card->add_Button('Click Me', [
     'class' => 'btn btn-primary',
     'type' => 'button'
 ]);
+
+// Agregar botones al encabezado
+$card->add_HeaderButton('Editar', [
+    'class' => 'btn btn-sm btn-secondary float-end'
+]);
 ```
 
 ## Ejemplos
@@ -104,6 +109,35 @@ HTML generado:
     <div class="card-body">
         <h1 class="card-title">Título Simple</h1>
         <p class="card-text">Contenido de ejemplo</p>
+    </div>
+</div>
+```
+
+### Tarjeta con Botones en el Encabezado
+
+```php
+$card = new Cards();
+$card->set_Header('Gestión de Usuario')
+     ->add_HeaderButton('Editar', ['class' => 'btn btn-sm btn-primary float-end'])
+     ->add_HeaderButton('Eliminar', ['class' => 'btn btn-sm btn-danger float-end ms-1'])
+     ->set_Title('Juan Pérez')
+     ->set_Text('Información del perfil de usuario')
+     ->add_Button('Ver Detalles');
+echo $card;
+```
+
+HTML generado:
+```html
+<div class="card" id="card-5f3e2d6">
+    <div class="card-header">
+        Gestión de Usuario
+        <button type="button" class="btn btn-sm btn-danger float-end ms-1">Eliminar</button>
+        <button type="button" class="btn btn-sm btn-primary float-end">Editar</button>
+    </div>
+    <div class="card-body">
+        <h1 class="card-title">Juan Pérez</h1>
+        <p class="card-text">Información del perfil de usuario</p>
+        <button type="button" class="btn btn-primary">Ver Detalles</button>
     </div>
 </div>
 ```

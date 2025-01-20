@@ -21,6 +21,7 @@ class Cards
     private $subtitle;
     private $text;
     private $buttons;
+    private $headerButtons;
     private $horizontal;
     private $attributes;
 
@@ -43,6 +44,7 @@ class Cards
         $this->text = $this->get_Attribute($attributes, 'text', '');
         $this->horizontal = $this->get_Attribute($attributes, 'horizontal', false);
         $this->buttons = [];
+        $this->headerButtons = [];
         $this->attributes = $attributes;
     }
 
@@ -178,6 +180,26 @@ class Cards
     }
 
     /**
+     * Agrega un botón al encabezado de la tarjeta
+     *
+     * @param string $label Etiqueta del botón
+     * @param array $attributes Atributos del botón
+     * @return self
+     */
+    public function add_HeaderButton($label, $attributes = []): self
+    {
+        $default_attributes = [
+            'class' => 'btn btn-sm btn-primary float-end ms-1',
+            'type' => 'button'
+        ];
+        $this->headerButtons[] = [
+            'label' => $label,
+            'attributes' => array_merge($default_attributes, $attributes)
+        ];
+        return $this;
+    }
+
+    /**
      * Obtiene un atributo del array de atributos
      *
      * @param array $attributes Array de atributos
@@ -203,6 +225,28 @@ class Cards
 
         $buttons = '';
         foreach ($this->buttons as $button) {
+            $buttons .= Html::get_Button([
+                'content' => $button['label'],
+                'class' => $button['attributes']['class'],
+                'type' => $button['attributes']['type']
+            ]);
+        }
+        return $buttons;
+    }
+
+    /**
+     * Renderiza los botones del encabezado
+     *
+     * @return string HTML de los botones
+     */
+    private function render_HeaderButtons(): string
+    {
+        if (empty($this->headerButtons)) {
+            return '';
+        }
+
+        $buttons = '';
+        foreach ($this->headerButtons as $button) {
             $buttons .= Html::get_Button([
                 'content' => $button['label'],
                 'class' => $button['attributes']['class'],
@@ -293,8 +337,9 @@ class Cards
 
         // Header
         if (!empty($this->header)) {
+            $headerContent = $this->header['content'] . $this->render_HeaderButtons();
             $content .= Html::get_Div([
-                'content' => $this->header['content'],
+                'content' => $headerContent,
                 'class' => $this->header['attributes']['class']
             ]);
         }
